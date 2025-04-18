@@ -1,47 +1,48 @@
-Proxy Server
-A simple HTTP proxy server implemented in C that supports GET requests, caching, and multithreading.
-Features
+# HTTP Proxy Server
 
-Handles HTTP GET requests
-Caches responses to improve performance
-Supports multiple clients using threads
-Implements LRU (Least Recently Used) cache eviction
-Error handling for common HTTP status codes (400, 403, 404, etc.)
+A lightweight HTTP proxy server implemented in C, supporting GET requests, caching, and multithreaded client handling.
 
-Requirements
+## Features
+- Handles HTTP GET requests (HTTP/1.0 and HTTP/1.1)
+- Caches responses with Least Recently Used (LRU) eviction
+- Supports concurrent clients using POSIX threads
+- Thread-safe cache with mutex and semaphore synchronization
+- Returns standard HTTP error responses (400, 403, 404, 500, 501, 505)
 
-C compiler (e.g., gcc)
-POSIX-compliant system (Linux, macOS, etc.)
-proxy_parse.h library for parsing HTTP requests
+## Requirements
+- C compiler (e.g., GCC)
+- POSIX-compliant system (Linux, macOS, etc.)
+- `proxy_parse.h` library for HTTP request parsing
 
-Compilation
+## Compilation
+Compile the code with pthread support:
+```bash
 gcc -o proxy proxy.c -pthread
-
-Usage
-Run the proxy server with an optional port number (default is 8080):
-./proxy [port]
-
-Example:
+```
+Run the server with an optional port (default: 8080):
+```bash 
 ./proxy 8080
+```
+To test:
+Set your browser’s proxy to localhost:8080.
+Visit a site (e.g., http://example.com).
+Check console for cache hits and errors.
 
-Configuration
+## Configuration
+- Edit these in proxy.c and recompile:
+- MAX_BYTES: Request/response size (4096 bytes)
+- MAX_CLIENTS: Concurrent clients (400)
+- MAX_SIZE: Cache size (200 MB)
+- MAX_ELEMENT_SIZE: Max cache entry (10 MB)
+- port_number: Default port (8080)
 
-MAX_BYTES: Maximum size of request/response (4096 bytes)
-MAX_CLIENTS: Maximum concurrent clients (400)
-MAX_SIZE: Cache size (200 MB)
-MAX_ELEMENT_SIZE: Maximum size of a cache element (10 MB)
+## Limitation
+- Only supports GET requests.
+- No HTTPS or other HTTP methods.
 
-How It Works
-
-Listens for client connections on the specified port.
-Creates a thread for each client to handle requests.
-Parses HTTP GET requests and forwards them to the target server.
-Caches responses and serves them for matching requests.
-Uses semaphores and mutexes for thread safety.
-
-Notes
-
-Only supports HTTP/1.0 and HTTP/1.1 GET requests.
-Cache uses LRU policy to evict old entries when full.
-Ensure proxy_parse.h is available for compilation.
-
+## Example Workflow
+- Save proxy.c and README.md.
+- Compile: gcc -o proxy proxy.c -pthread.
+- Run: ./proxy 8080.
+- Configure browser proxy to localhost:8080.
+- Test with http://example.com.
